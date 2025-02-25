@@ -72,3 +72,4 @@ urllib3==2.3.0
 wcwidth==0.2.13
 xxhash==3.5.0
 yarl==1.18.3
+python-telegram-bot==1.3.0
