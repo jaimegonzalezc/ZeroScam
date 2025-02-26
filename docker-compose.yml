@@ -1,11 +1,22 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  bot:
+  telegram-bot:
     build: .
     container_name: telegram_bot
     restart: always
+    ports:
+      - "8080:8080"
     environment:
-      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
     volumes:
-      - ./deepseek-ciberseguridad-lora:/app/deepseek-ciberseguridad-lora
+      - .:/app
+
