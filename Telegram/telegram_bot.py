@@ -1,12 +1,10 @@
 import os
 import sys
-import torch
 import logging
-from transformers import AutoModelForCausalLM, AutoTokenizer
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackContext
-from peft import PeftModel
 from dotenv import load_dotenv
+from model_loader import generate_response  # Importa la función desde model_loader.py
 
 # Cargar variables de entorno
 load_dotenv()
@@ -19,35 +17,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Configuración del modelo
-MODEL_DIR = "./deepseek-ciberseguridad-lora"
-BASE_MODEL = "CasiAC/deepseek-ciberseguridad-lora"
-
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-logger.info(f"Usando dispositivo: {device}")
-
-# Cargar el tokenizador y el modelo
-logger.info("Cargando modelo base...")
-tokenizer = AutoTokenizer.from_pretrained(MODEL_DIR)
-model = AutoModelForCausalLM.from_pretrained(
-    BASE_MODEL,
-    torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
-    device_map="auto"
-)
-
-# Cargar LoRA
-logger.info("Aplicando fine-tuning con LoRA...")
-model = PeftModel.from_pretrained(model, MODEL_DIR)
-model = model.merge_and_unload()
-model.to(device)
-logger.info("Modelo cargado exitosamente.")
-
-# Función para generar respuestas
-def generate_response(text):
-    inputs = tokenizer(text, return_tensors="pt").to(device)
-    output = model.generate(**inputs, max_new_tokens=200, temperature=0.2, do_sample=True)
-    return tokenizer.decode(output[0], skip_special_tokens=True)
-
 # Handlers de Telegram
 async def start(update: Update, context: CallbackContext) -> None:
     await update.message.reply_text("¡Hola! Soy tu especialista en ciberseguridad. ¿En qué te puedo ayudar?")
@@ -57,7 +26,7 @@ async def handle_message(update: Update, context: CallbackContext) -> None:
     username = update.message.from_user.username
     logger.info(f"Mensaje recibido de {username}: {user_input}")
 
-    response = generate_response(user_input)
+    response = generate_response(user_input)  # Usa la función importada
     await update.message.reply_text(response)
 
 # Función principal
