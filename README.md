@@ -1,6 +1,25 @@
 # ZeroScam
+![alt text](images/ZeroScam-logo.png)
 
-# RAG Normativa de Ciberseguridad
+ZeroScam es una herramienta completa de ciberseguridad pensada para que usuarios puedan consultar dudas referentes a la seguridad digital, prevención de ciberestafas y consulta de normativas. 
+
+Se trata de un Agente IA que usa DeepSeek R1 como modelo base con un finetuning con un dataset formado por la fusión de varios datasets pregunta-respuesta sobre temas de ciberseguridad. 
+
+Además se ha alimentado el contexto con un RAG con las normativas:
+* NIST
+* GDPR
+* ISO 27001 
+
+Esto permite conocer con detalle aspectos de estas normativas y consultar detalles sobre las mismas evitando que el modelo alucine con esta información. 
+
+A continuación se detalla la arquitectura establecida:
+
+![alt text](images/ZeroScam-Architecture.png)
+
+La aplicación se ha dockerizado con una imagen base CUDA para ser más eficiente utilizando los recursos de GPU. La idea detrás de esto es poder ejecutar el modelo en cualquier servicio de nube con capacidad de GPU, como Kubernetes, Azure o AWS.
+
+
+## RAG Normativa de Ciberseguridad
 
 La técnica **Retrieval-Augmented Generation (RAG)**, o **Generación Aumentada por Recuperación**, 
 es una metodología innovadora que combina la potencia de los modelos de lenguaje de gran escala (LLM)
@@ -8,9 +27,7 @@ con la capacidad de recuperar información externa y actualizada. Esto permite q
 únicamente a su conocimiento preentrenado, sino que pueda acceder a datos recientes y específicos, lo 
 que resulta fundamental en un campo tan dinámico como la ciberseguridad.
 
----
-
-## ¿Qué es RAG?
+### ¿Qué es RAG?
 
 RAG integra dos componentes esenciales:
 
@@ -28,7 +45,7 @@ complementar su conocimiento interno con datos externos verificados.
 
 ---
 
-## Aplicación en la Normativa de Ciberseguridad
+### Aplicación en la Normativa de Ciberseguridad
 
 El notebook implementa una solución RAG para potenciar el rendimiento del modelo **Deepseek R1 8B Ciberseguridad**. 
 La integración de la normativa de ciberseguridad permite que el modelo:
@@ -44,7 +61,7 @@ La integración de la normativa de ciberseguridad permite que el modelo:
 
 ---
 
-## Documentos Normativos Utilizados
+### Documentos Normativos Utilizados
 
 El sistema RAG se apoya en un conjunto de documentos clave que abarcan diversos aspectos de la ciberseguridad:
 
@@ -66,7 +83,7 @@ El sistema RAG se apoya en un conjunto de documentos clave que abarcan diversos 
 
 ---
 
-## Arquitectura del Sistema
+### Arquitectura del Sistema
 
 El sistema se compone de varias partes integradas que permiten su funcionamiento de manera conjunta:
 
@@ -84,7 +101,7 @@ El sistema se compone de varias partes integradas que permiten su funcionamiento
 
 ---
 
-## Beneficios de la Solución RAG en Ciberseguridad
+### Beneficios de la Solución RAG en Ciberseguridad
 
 La integración de la normativa en un sistema RAG ofrece múltiples ventajas:
 
@@ -105,7 +122,7 @@ La integración de la normativa en un sistema RAG ofrece múltiples ventajas:
 
 ---
 
-## Conclusión
+### Conclusión
 
 Este notebook demuestra cómo la técnica **RAG (Retrieval-Augmented Generation)** puede revolucionar la forma de 
 abordar la ciberseguridad mediante:
@@ -125,24 +142,24 @@ Con esta configuración, el modelo **Deepseek R1 8B Ciberseguridad** puede propo
 relevantes y contextualizadas a preguntas relacionadas con la seguridad de la información, marcando un avance 
 significativo en la aplicación de técnicas RAG en el ámbito de la ciberseguridad.
 
-# Módulo de Consulta a VirusTotal
+## Módulo de Consulta a VirusTotal
 
 Este módulo permite verificar la seguridad de direcciones **IP** y **URLs** utilizando la API de **VirusTotal**. Se integra con un modelo de lenguaje para detectar direcciones sospechosas en un texto y generar respuestas automáticas.
 
-## Requisitos
+### Requisitos
 Para utilizar este módulo, es necesario contar con una clave de API de VirusTotal y acceso a una conexión a internet.
 
-## Funcionalidades
-### 1. Consulta de IPs
+### Funcionalidades
+#### 1. Consulta de IPs
 El módulo permite verificar si una dirección IP ha sido reportada como maliciosa en VirusTotal. Devuelve un informe con la cantidad de detecciones y una evaluación de seguridad basada en los análisis disponibles.
 
-### 2. Consulta de URLs
+#### 2. Consulta de URLs
 Se puede analizar una URL para determinar si ha sido identificada como maliciosa. El módulo envía la URL a VirusTotal, obtiene los resultados del análisis y proporciona un veredicto de seguridad.
 
-### 3. Detección Automática en Texto
+#### 3. Detección Automática en Texto
 Si un usuario proporciona un mensaje que contiene una IP o URL, el módulo detecta automáticamente la información y consulta VirusTotal sin necesidad de una solicitud manual.
 
-### 4. Generación de Respuestas Inteligentes
+#### 4. Generación de Respuestas Inteligentes
 El módulo no solo analiza direcciones, sino que también genera respuestas automatizadas. Si no se detecta una IP o URL, responde de manera normal utilizando un modelo de lenguaje.
 
 ## Tesseract OCR
