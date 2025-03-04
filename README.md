@@ -125,6 +125,25 @@ Con esta configuración, el modelo **Deepseek R1 8B Ciberseguridad** puede propo
 relevantes y contextualizadas a preguntas relacionadas con la seguridad de la información, marcando un avance 
 significativo en la aplicación de técnicas RAG en el ámbito de la ciberseguridad.
 
+# Módulo de Consulta a VirusTotal
+
+Este módulo permite verificar la seguridad de direcciones **IP** y **URLs** utilizando la API de **VirusTotal**. Se integra con un modelo de lenguaje para detectar direcciones sospechosas en un texto y generar respuestas automáticas.
+
+## Requisitos
+Para utilizar este módulo, es necesario contar con una clave de API de VirusTotal y acceso a una conexión a internet.
+
+## Funcionalidades
+### 1. Consulta de IPs
+El módulo permite verificar si una dirección IP ha sido reportada como maliciosa en VirusTotal. Devuelve un informe con la cantidad de detecciones y una evaluación de seguridad basada en los análisis disponibles.
+
+### 2. Consulta de URLs
+Se puede analizar una URL para determinar si ha sido identificada como maliciosa. El módulo envía la URL a VirusTotal, obtiene los resultados del análisis y proporciona un veredicto de seguridad.
+
+### 3. Detección Automática en Texto
+Si un usuario proporciona un mensaje que contiene una IP o URL, el módulo detecta automáticamente la información y consulta VirusTotal sin necesidad de una solicitud manual.
+
+### 4. Generación de Respuestas Inteligentes
+El módulo no solo analiza direcciones, sino que también genera respuestas automatizadas. Si no se detecta una IP o URL, responde de manera normal utilizando un modelo de lenguaje.
 
 ## Tesseract OCR
 
@@ -197,3 +216,5 @@ Ejemplo de salida esperada:
 ```
 Texto extraído de la imagen con OCR optimizado.
 ```
+
+Este texto extraído de las imágenes se incluye en el PipeLine de consulta a VirusTotal para en caso de detectar una URL o IP consultar a la API. 
