@@ -1,7 +1,8 @@
-#ZeroScam: Agente de Ciberseguridad
+#ZeroScam
 
 ## Instalo librerias
-"""!pip install chromadb fastapi pyngrok uvicorn
+"""
+!pip install chromadb fastapi pyngrok uvicorn
 !pip install datasets trl
 !pip uninstall -y bitsandbytes
 !pip install --upgrade bitsandbytes
@@ -17,7 +18,6 @@
 !apt-get install -y tesseract-ocr
 !pip install pytesseract
 !tesseract -v
-"""
 import os
 import json
 import re
@@ -26,26 +26,53 @@ import threading
 import logging
 import requests
 from dotenv import load_dotenv
-
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from sentence_transformers import SentenceTransformer
-from bitsandbytes import BitsAndBytesConfig
-
+from transformers import BitsAndBytesConfig
 from fastapi import FastAPI
 import uvicorn
 from pyngrok import ngrok
-
 import pytesseract
 from PIL import Image, ImageEnhance
 import spacy
-
 import nest_asyncio
 nest_asyncio.apply()
+from huggingface_hub import notebook_login
+import torch
+import requests
+import chromadb
+from pyngrok import ngrok
+from fastapi import FastAPI
+from google.colab import drive
+from sentence_transformers import SentenceTransformer
+import uvicorn
+import threading
+from datasets import load_dataset, Dataset, DatasetDict
+from transformers import (
+    AutoModelForCausalLM,
+    AutoTokenizer,
+    TrainingArguments,
+    BitsAndBytesConfig
+)
+from peft import LoraConfig, prepare_model_for_kbit_training, get_peft_model
+from trl import SFTTrainer
+import random
+import pytesseract
+import spacy
+import re
+from PIL import Image
+from google.colab import files
+import sys
+import logging
+from telegram import Update
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackContext
+from dotenv import load_dotenv
+from PIL import Image, ImageEnhance
+from io import BytesIO
+"""
 
-# ---------------------------------
 # CONFIGURACIÓN: Montar Google Drive y Variables
-# ---------------------------------
 drive.mount('/content/drive')
 BASE_DIR = "/content/drive/My Drive/Trabajo Final Bootcamp"
 NORMATIVA_DIR = os.path.join(BASE_DIR, "normativa")
@@ -54,11 +81,10 @@ EMBEDDINGS_BACKUP_PATH = os.path.join(BASE_DIR, "embeddings.json")
 if not os.path.exists(NORMATIVA_DIR):
     raise FileNotFoundError(f"La carpeta {NORMATIVA_DIR} no existe. Verifica la ruta o crea la carpeta.")
 
-notebook_login()  # Login en Hugging Face (ejecutar solo una vez)
+# Login en Hugging Face
+notebook_login()
 
-# ---------------------------------
 # CARGA DE MODELOS Y CONFIGURACIÓN DE DISPOSITIVO
-# ---------------------------------
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print(f"✅ Usando dispositivo: {device}")
 
@@ -80,9 +106,7 @@ tokenizer.pad_token = tokenizer.eos_token
 embedding_model = SentenceTransformer('all-MiniLM-L6-v2', device=device)
 print("✅ Modelo cargado 🚀")
 
-# ---------------------------------
 # CONFIGURACIÓN DE CHROMADB Y FASTAPI
-# ---------------------------------
 app = FastAPI()
 
 # Configuración de ngrok para exponer el puerto 8000
@@ -128,9 +152,7 @@ def start_server():
 server_thread = threading.Thread(target=start_server, daemon=True)
 server_thread.start()
 
-# ---------------------------------
 # FUNCIONES DE INDEXACIÓN Y GENERACIÓN DE CONTEXTO (RAG)
-# ---------------------------------
 def cargar_documentos_y_embeddings():
     embeddings_dict = {}
     for archivo in os.listdir(NORMATIVA_DIR):
@@ -182,33 +204,49 @@ def generar_respuesta_rag(pregunta, max_tokens=300, temperatura=0.1):
         top_p=0.9,
         repetition_penalty=1.05
     )
-    return tokenizer.decode(output[0], skip_special_tokens=True)
+    # Decodificar la salida
+    respuesta_completa = tokenizer.decode(output[0], skip_special_tokens=True)
 
-# ---------------------------------
+    # Extraer solo la respuesta (eliminar contexto y pregunta)
+    respuesta = respuesta_completa.split("Respuesta:")[-1].strip()
+
+    return respuesta
+
 # FUNCIONES DE OCR Y CONSULTA A VIRUSTOTAL
-# ---------------------------------
 pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
 nlp = spacy.load("en_core_web_sm")
 
 API_KEY = "06858db9f480b4aba21a5831457a9b919b1f9014e6f8872ee1f4f7d1a029197c"
 HEADERS = {"x-apikey": API_KEY}
 
-def preprocesar_imagen(imagen):
+def preprocesar_imagen(imagen_bytes):
     """Convierte la imagen a escala de grises y mejora el contraste."""
     try:
-        image = Image.open(imagen).convert("L")
-        enhancer = ImageEnhance.Contrast(image)
-        return enhancer.enhance(2.0)
+        if isinstance(imagen_bytes, bytes) and len(imagen_bytes) > 0:  # Aseguramos que recibimos bytes no vacíos
+            imagen = Image.open(BytesIO(imagen_bytes))  # Convertimos los bytes en una imagen PIL
+        else:
+            raise ValueError("Se esperaba un objeto de tipo bytes y no vacío")
+
+        imagen = imagen.convert("L")  # Convertir a escala de grises
+        enhancer = ImageEnhance.Contrast(imagen)
+        imagen = enhancer.enhance(2.0)  # Aumentar contraste
+
+        return imagen
     except Exception as e:
+        print(f"Error al procesar la imagen: {e}")
         return None
 
-def extraer_texto_img(imagen):
-    """Extrae y limpia el texto de una imagen."""
-    image = preprocesar_imagen(imagen)
-    if image is None:
-        return "Error al procesar la imagen"
-    texto_extraido = pytesseract.image_to_string(image)
-    return limpiar_texto(texto_extraido)
+def extraer_texto_img(imagen_bytes):
+    """Extrae texto de una imagen tras preprocesarla."""
+    try:
+        imagen = preprocesar_imagen(imagen_bytes)  # Aquí pasamos los bytes
+        if imagen is None:
+            return "Error al procesar la imagen"
+        # Extraer texto con pytesseract
+        texto_extraido = pytesseract.image_to_string(imagen)
+        return limpiar_texto(texto_extraido)
+    except Exception as e:
+        return f"Error al procesar la imagen: {str(e)}"
 
 def consultar_ip(ip):
     url = f"https://www.virustotal.com/api/v3/ip_addresses/{ip}"
@@ -257,13 +295,14 @@ def analizar_con_modelo(texto_extraido):
       🔹 REGLAS ESTRICTAS:
       1. No inventes información. Basa tu respuesta ÚNICAMENTE en el texto proporcionado.
       2. Sé conciso y preciso.
-      3. La respuesta debe comenzar con "Phishing" o "Not Phishing", seguido de una breve explicación.
+      3. La respuesta debe comenzar con "Sospechoso" o "No Sospechoso", seguido de una breve explicación.
       4. Responde siempre en español.
     """
     prompt_modelo = f"""
       Analiza el siguiente mensaje y determina si se trata de un intento de phishing.
       MENSAJE A EVALUAR:
       {texto_extraido}
+      Respuesta:
     """
     inputs = tokenizer(system_prompt + prompt_modelo, return_tensors="pt", padding=True, truncation=True).to(device)
     outputs = model.generate(
@@ -277,8 +316,15 @@ def analizar_con_modelo(texto_extraido):
         repetition_penalty=1.2,
         pad_token_id=tokenizer.eos_token_id,
     )
-    response = tokenizer.decode(outputs[0], skip_special_tokens=True).strip()
-    return response
+
+    # Decodificar la salida
+    respuesta_completa = tokenizer.decode(outputs[0], skip_special_tokens=True)
+
+    # Extraer solo la respuesta (eliminar contexto y pregunta)
+    respuesta = respuesta_completa.split("Respuesta:")[-1].strip()
+
+    return respuesta
+
 
 def analizar_prompt(prompt):
     """
@@ -305,9 +351,7 @@ def analizar_prompt(prompt):
         return consultar_url(url)
     return None
 
-# ---------------------------------
 # FUNCIÓN UNIFICADA DE GENERACIÓN DE RESPUESTA
-# ---------------------------------
 def generate_response(prompt):
     """
     Función unificada que:
@@ -320,7 +364,7 @@ def generate_response(prompt):
     resultado_api = analizar_prompt(prompt)
     if resultado_api is not None:
         return json.dumps(resultado_api, indent=4, ensure_ascii=False)
-    
+
     # Paso 2: Consultar contexto en ChromaDB para RAG
     contexto = obtener_contexto(prompt)
     if contexto.strip().lower().startswith("no se encontraron documentos"):
@@ -342,14 +386,6 @@ def generate_response(prompt):
         # Si se encontró contexto, usar generación basada en RAG
         return generar_respuesta_rag(prompt)
 
-# ---------------------------------
-# PRUEBA DE LA FUNCIÓN UNIFICADA
-# ---------------------------------
-prompt_usuario = 'image6.png'
-respuesta_usuario = generate_response(prompt_usuario)
-print(f"\n🔹 Respuesta:\n{respuesta_usuario}")
-
-# ---------------------------------
 # CONFIGURACIÓN DEL BOT DE TELEGRAM
 # ---------------------------------
 load_dotenv()
@@ -372,7 +408,38 @@ async def handle_message(update: Update, context: CallbackContext) -> None:
     username = update.message.from_user.username
     logger.info(f"Mensaje recibido de {username}: {user_input}")
     response = generate_response(user_input)
+    response = response[0:4000]
     await update.message.reply_text(response)
+
+async def handle_photo(update: Update, context: CallbackContext) -> None:
+    """Manejador de imágenes enviadas al bot."""
+    username = update.message.from_user.username
+    photo = update.message.photo[-1]  # Obtiene la mejor calidad de la imagen enviada
+
+    # Descargar la imagen
+    photo_file = await photo.get_file()
+    img_bytearray = await photo_file.download_as_bytearray()  # Devuelve un bytearray
+    img_bytes = bytes(img_bytearray)  # Convertimos bytearray a bytes
+
+    if not img_bytes:
+        logger.error("Error: Los bytes de la imagen están vacíos.")
+        await update.message.reply_text("No se pudo descargar la imagen.")
+        return
+
+    logger.info(f"Imagen recibida de {username}, procesando con OCR...")
+
+    # Extraer texto de la imagen
+    texto_extraido = extraer_texto_img(img_bytes)  # Pasamos los bytes correctamente
+
+    if not texto_extraido.strip():
+        await update.message.reply_text("No pude extraer texto de la imagen. Asegúrate de que el mensaje sea legible.")
+        return
+
+    # Analizar el texto con el modelo
+    resultado = analizar_con_modelo(texto_extraido)
+
+    # Responder al usuario con el análisis
+    await update.message.reply_text(resultado)
 
 def main():
     TELEGRAM_TOKEN = "7047664203:AAEa-JEcZQpv-tDCIdV6ZE_odp4lPTH0Bd8"
@@ -383,10 +450,9 @@ def main():
     app_telegram = Application.builder().token(TELEGRAM_TOKEN).build()
     app_telegram.add_handler(CommandHandler("start", start))
     app_telegram.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+    app_telegram.add_handler(MessageHandler(filters.PHOTO, handle_photo))
     logger.info("Bot iniciado y ejecutándose...")
     app_telegram.run_polling()
 
 if __name__ == "__main__":
     main()
-
-
