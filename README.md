@@ -1,4 +1,4 @@
-# ZeroScam
+<center><h1>ZeroScam</h1></center>
 
 ## Tesseract OCR
 
