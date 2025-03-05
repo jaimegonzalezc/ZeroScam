@@ -19,7 +19,7 @@ A continuación se detalla la arquitectura establecida:
 La aplicación se ha dockerizado con una imagen base CUDA para ser más eficiente utilizando los recursos de GPU. La idea detrás de esto es poder ejecutar el modelo en cualquier servicio de nube con capacidad de GPU, como Kubernetes, Azure o AWS.
 
 ## Estructura del proyecto
-
+```bash
 ZeroScam/
 ├── app/                         # Aplicación principal
 │   ├── Dockerfile               # Configuración para contenedor Docker
@@ -56,7 +56,7 @@ ZeroScam/
 ├── README.md                    # Documentación principal del repositorio
 ├── ZeroScam.ipynb               # Notebook con pruebas iniciales del modelo
 └── ZeroScam_Completo.ipynb      # Versión completa del notebook con análisis extendido
-
+```
 
 ## Ejecución
 
