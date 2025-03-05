@@ -54,13 +54,12 @@ ZeroScam/
 ├── .env                         # Variables de entorno necesarias para la configuración
 ├── .gitignore                   # Archivos y carpetas ignorados por Git
 ├── README.md                    # Documentación principal del repositorio
-├── ZeroScam.ipynb               # Notebook con pruebas iniciales del modelo
-└── ZeroScam_Completo.ipynb      # Versión completa del notebook con análisis extendido
+└── ZeroScam.ipynb               # Versión completa de la aplicación para ejecutar el modelo
 ```
 
 ## Ejecución
 
-La forma más sencilla de ejecutar el proyecto es ejecutar el notebook `ZeroScam_Completo.ipynb` en Google Colab con un entorno de ejecución A100. 
+La forma más sencilla de ejecutar el proyecto es ejecutar el notebook `ZeroScam.ipynb` en Google Colab con un entorno de ejecución A100. 
 
 También se ha dockerizado la aplicación pudiendo ejecutarla en cualquier entorno de nube optimizado para uso de GPUs. PAra construir la imagen, ir a la carpeta /app y ejecutar:
 
