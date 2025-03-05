@@ -162,6 +162,47 @@ Si un usuario proporciona un mensaje que contiene una IP o URL, el módulo detec
 #### 4. Generación de Respuestas Inteligentes
 El módulo no solo analiza direcciones, sino que también genera respuestas automatizadas. Si no se detecta una IP o URL, responde de manera normal utilizando un modelo de lenguaje.
 
+## Aplicacion normativa para posterior RAG
+
+### Paso 1: Conversión de PDF a JSON
+#### ¿Qué hicimos?
+Transformamos los documentos en formato PDF a JSON, extrayendo el texto y organizándolo por páginas.
+
+#### ¿Por qué lo hicimos?
+- Los PDFs no son fácilmente manipulables en NLP o bases de datos.
+- Un formato estructurado (JSON) permite trabajar con el texto fácilmente, conservando su estructura original.
+- Facilita el procesamiento posterior, como la segmentación y extracción de información relevante.
+
+### Paso 2: Limpieza del Texto
+#### ¿Qué hicimos?
+Aplicamos un preprocesamiento de texto eliminando caracteres innecesarios, espacios adicionales y normalizando el contenido.
+
+#### ¿Por qué lo hicimos?
+- El texto extraído puede contener símbolos y caracteres especiales que no aportan valor.
+- La limpieza mejora la calidad del análisis NLP, eliminando ruido que podría afectar la tokenización y generación de embeddings.
+
+### Paso 3: Tokenización y Segmentación con Ventanas Deslizantes
+#### ¿Qué hicimos?
+- Dividimos el texto en oraciones y eliminamos stopwords y puntuación.
+- Agrupamos las oraciones en fragmentos superpuestos llamados ventanas deslizantes para preservar el contexto.
+
+### Paso 4: Generación de Embeddings
+#### ¿Qué hicimos?
+Convertimos cada fragmento de texto en vectores numéricos (embeddings) usando modelos de lenguaje preentrenados.
+
+#### ¿Por qué lo hicimos?
+- Los embeddings permiten comparar significados de textos, en lugar de depender solo de coincidencias exactas de palabras.
+- Son esenciales para hacer búsquedas semánticas en bases de datos vectoriales.
+
+### Paso 5: Almacenamiento en ChromaDB
+#### ¿Qué hicimos?
+Guardamos los embeddings en ChromaDB, una base de datos vectorial optimizada para búsquedas semánticas.
+
+#### ¿Por qué lo hicimos?
+- Las bases de datos vectoriales permiten encontrar documentos similares en significado, no solo por palabras clave exactas.
+- Optimiza la búsqueda en textos largos como normativas y regulaciones.
+
+
 ## Tesseract OCR
 
 ### Introducción
