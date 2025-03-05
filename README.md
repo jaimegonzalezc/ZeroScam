@@ -59,7 +59,18 @@ ZeroScam/
 
 ## Ejecución
 
-La forma más sencilla de ejecutar el proyecto es ejecutar el notebook `ZeroScam.ipynb` en Google Colab con un entorno de ejecución A100. 
+La forma más sencilla de ejecutar el proyecto es ejecutar el notebook `ZeroScam.ipynb` en Google Colab con un entorno de ejecución A100. El único requisito será actualizar los tokens necesarios:
+
+```python
+# TOKEN ngrok 
+ngrok.set_auth_token("Tu Ngrok token")
+
+# VirusTotal API Key
+API_KEY = "Tu VirusTotal API Key"
+
+# Telegram Token
+TELEGRAM_TOKEN = "Tu telegram bot token"
+```
 
 También se ha dockerizado la aplicación pudiendo ejecutarla en cualquier entorno de nube optimizado para uso de GPUs. PAra construir la imagen, ir a la carpeta /app y ejecutar:
 

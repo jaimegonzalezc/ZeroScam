@@ -71,6 +71,14 @@ from dotenv import load_dotenv
 from PIL import Image, ImageEnhance
 from io import BytesIO
 """
+# TOKEN ngrok 
+ngrok.set_auth_token("Tu Ngrok token")
+
+# VirusTotal API Key
+API_KEY = "Tu VirusTotal API Key"
+
+# Telegram Token
+TELEGRAM_TOKEN = "Tu telegram bot token"
 
 # CONFIGURACIÓN: Montar Google Drive y Variables
 drive.mount('/content/drive')
@@ -110,7 +118,6 @@ print("✅ Modelo cargado 🚀")
 app = FastAPI()
 
 # Configuración de ngrok para exponer el puerto 8000
-ngrok.set_auth_token("2sN2ljFFRN4UpJk7VPL6jPiHVJL_6FafRKrvugJysTGGRV1KB")
 public_url = ngrok.connect(8000)
 print(f"🔗 ChromaDB API accesible en: {public_url}")
 
@@ -216,7 +223,6 @@ def generar_respuesta_rag(pregunta, max_tokens=300, temperatura=0.1):
 pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
 nlp = spacy.load("en_core_web_sm")
 
-API_KEY = "06858db9f480b4aba21a5831457a9b919b1f9014e6f8872ee1f4f7d1a029197c"
 HEADERS = {"x-apikey": API_KEY}
 
 def preprocesar_imagen(imagen_bytes):
@@ -442,7 +448,6 @@ async def handle_photo(update: Update, context: CallbackContext) -> None:
     await update.message.reply_text(resultado)
 
 def main():
-    TELEGRAM_TOKEN = "7047664203:AAEa-JEcZQpv-tDCIdV6ZE_odp4lPTH0Bd8"
     if not TELEGRAM_TOKEN:
         logger.error("El token de Telegram no está configurado.")
         sys.exit(1)
@@ -456,3 +461,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+main()
