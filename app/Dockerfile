@@ -1,24 +1,25 @@
-# Usar una imagen base de Python optimizada para GPU (si usarás CUDA)
-FROM nvidia/cuda:12.1.1-devel-ubuntu22.04 
+# Usa una imagen base con Python y CUDA preinstalado
+FROM nvidia/cuda:12.1.1-runtime-ubuntu22.04
 
-# Configurar el entorno de trabajo
+# Establece el directorio de trabajo
 WORKDIR /app
 
-# Instalar dependencias del sistema
-RUN apt-get update && apt-get install -y git curl && rm -rf /var/lib/apt/lists/*
+# Actualiza e instala dependencias del sistema
+RUN apt-get update && apt-get install -y \
+    python3-pip \
+    python3-dev \
+    tesseract-ocr \
+    && rm -rf /var/lib/apt/lists/*
 
-# Instalar Python y pip
-RUN apt-get install -y python3 python3-pip
-
-# Copiar los archivos del proyecto
+# Copia los archivos de la aplicación al contenedor
 COPY . /app
 
-# Instalar dependencias
+# Instala las dependencias
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Exponer el puerto 8000 para FastAPI
-EXPOSE 8000
+# Expone los puertos necesarios
+EXPOSE 8000 
+EXPOSE 8443 
 
-# Comando para ejecutar la aplicación
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-
+# Comando de ejecución
+CMD ["python3", "zeroscam.py"]
