@@ -21,52 +21,42 @@ La aplicación se ha dockerizado con una imagen base CUDA para ser más eficient
 ## Estructura del proyecto
 
 ZeroScam/
-├── app/ # Aplicación principal
-│ ├── Dockerfile # Configuración para contenedor Docker
-│ ├── requirements.txt # Dependencias del proyecto
-│ └── zeroscam.py # Script principal
-│
-├── data/ # Generación de dataset final
-│
-├── docs/ # Documentación del proyecto
-│ ├── ZeroScam_Origin.pptx # Presentación de introducción al proyecto
-│ ├── ZeroScam.docx # Documento detallado sobre ZeroScam
-│ └── ZeroScamArchitecture.drawio # Diagrama de arquitectura del sistema
-│
-├── images/ # Imágenes utilizadas en la documentación
-│
-├── model/ # Modelos de IA utilizados en todas las etapas del proyecto
-│ │ # El modelo final está en Hugging Face: CasiAC/deepseek-r1-8b-ciberseguridad
-│ ├── Deepseek_R1_8B_Ciberseguridad.ipynb # Modelo Deepseek especializado en ciberseguridad
-│ ├── Finetunning_Deepseek_R1_8B_LoRA.ipynb # Ajuste fino con LoRA para Deepseek
-│ ├── Finetunning_Mistral.ipynb # Ajuste fino de un modelo Mistral
-│ ├── Model+OCR.ipynb # Integración de modelo de IA con OCR
-│ └── ZeroShot.ipynb # Implementación de aprendizaje Zero-Shot
-│
-├── ocr/ # Scripts de reconocimiento óptico de caracteres
-│ ├── images/ # Imágenes de prueba para OCR
-│ ├── OCRs.ipynb # Implementación básica de OCR
-│ └── UpgradedTesseractOCR.ipynb # Versión mejorada con Tesseract OCR
-│
-├── pipeline/ # Procesos y pruebas del modelo
-│ ├── Analyze_URL.ipynb # Análisis de URLs sospechosas
-│ └── Prueba_Modelo.ipynb # Prueba de funcionamiento del modelo
-│
-├── rag/ # Implementación de Retrieval-Augmented Generation
-│ └── RAG_Ciberseguridad_Normativa.ipynb # Sistema RAG para normativa de ciberseguridad
-│
-├── regulaciones/ # Archivos relacionados con normativas y regulaciones
-│
-├── telegram/ # Integración con Telegram
-│ ├── model_loader.py # Carga del modelo en el bot
-│ ├── telegram_bot.ipynb # Implementación del bot en Jupyter Notebook
-│ └── telegram_bot.py # Código principal del bot de Telegram
-│
-├── .env # Variables de entorno necesarias para la configuración
-├── .gitignore # Archivos y carpetas ignorados por Git
-├── README.md # Documentación principal del repositorio
-├── ZeroScam.ipynb # Notebook con pruebas iniciales del modelo
-└── ZeroScam_Completo.ipynb # Versión completa del notebook con análisis extendido
+├── app/                         # Aplicación principal
+│   ├── Dockerfile               # Configuración para contenedor Docker
+│   ├── requirements.txt         # Dependencias del proyecto
+│   └── zeroscam.py              # Script principal
+├── data/                        # Generación de dataset final
+├── docs/                        # Documentación del proyecto
+│   ├── ZeroScam_Origin.pptx     # Presentación de introducción al proyecto
+│   ├── ZeroScam.docx            # Documento detallado sobre ZeroScam
+│   └── ZeroScamArchitecture.drawio # Diagrama de arquitectura del sistema
+├── images/                      # Imágenes utilizadas en la documentación
+├── model/                       # Modelos de IA utilizados en todas las etapas del proyecto. El modelo final está en Hugging Face: CasiAC/deepseek-r1-8b-ciberseguridad
+│   ├── Deepseek_R1_8B_Ciberseguridad.ipynb # Modelo Deepseek especializado en ciberseguridad
+│   ├── Finetunning_Deepseek_R1_8B_LoRA.ipynb # Ajuste fino con LoRA para Deepseek
+│   ├── Finetunning_Mistral.ipynb # Ajuste fino de un modelo Mistral
+│   ├── Model+OCR.ipynb          # Integración de modelo de IA con OCR
+│   └── ZeroShot.ipynb           # Implementación de aprendizaje Zero-Shot
+├── ocr/                         # Scripts de reconocimiento óptico de caracteres
+│   ├── images/                  # Imágenes de prueba para OCR
+│   ├── OCRs.ipynb               # Implementación básica de OCR
+│   └── UpgradedTesseractOCR.ipynb # Versión mejorada con Tesseract OCR
+├── pipeline/                    # Procesos y pruebas del modelo
+│   ├── Analyze_URL.ipynb        # Análisis de URLs sospechosas
+│   └── Prueba_Modelo.ipynb      # Prueba de funcionamiento del modelo
+├── rag/                         # Implementación de Retrieval-Augmented Generation
+│   └── RAG_Ciberseguridad_Normativa.ipynb # Sistema RAG para normativa de ciberseguridad
+├── regulaciones/                # Archivos relacionados con normativas y regulaciones
+├── telegram/                    # Integración con Telegram
+│   ├── model_loader.py          # Carga del modelo en el bot
+│   ├── telegram_bot.ipynb       # Implementación del bot en Jupyter Notebook
+│   └── telegram_bot.py          # Código principal del bot de Telegram
+├── .env                         # Variables de entorno necesarias para la configuración
+├── .gitignore                   # Archivos y carpetas ignorados por Git
+├── README.md                    # Documentación principal del repositorio
+├── ZeroScam.ipynb               # Notebook con pruebas iniciales del modelo
+└── ZeroScam_Completo.ipynb      # Versión completa del notebook con análisis extendido
+
 
 ## Ejecución
 
