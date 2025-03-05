@@ -203,27 +203,27 @@ Guardamos los embeddings en ChromaDB, una base de datos vectorial optimizada par
 - Optimiza la búsqueda en textos largos como normativas y regulaciones.
 
 
-## Tesseract OCR
+## Tesseract OCR: Reconocimiento Óptico de Caracteres Optimizado
 
 ### Introducción
 
-Este módulo implementa un sistema de reconocimiento óptico de caracteres (OCR) optimizado, utilizando Tesseract como motor principal. Se realizaron pruebas comparativas con diferentes frameworks de OCR para determinar la mejor opción en términos de precisión y rendimiento.
+Este módulo presenta una implementación avanzada de reconocimiento óptico de caracteres (OCR), utilizando Tesseract como motor principal. Para determinar la opción más precisa y eficiente, se llevaron a cabo evaluaciones comparativas con otros frameworks de OCR, seleccionando Tesseract como la solución más equilibrada en términos de desempeño y exactitud.
 
 ### Evaluación de Modelos OCR
 
-Se analizaron tres soluciones de OCR para determinar cuál ofrecía el mejor desempeño en términos de exactitud y velocidad:
+Se probaron tres soluciones de OCR para evaluar su precisión y velocidad en el procesamiento de texto extraído de imágenes:
 
 - **PaddleOCR**
 - **EasyOCR**
 - **Tesseract**
 
-Tras una serie de pruebas, **Tesseract fue seleccionado** como la mejor opción debido a su equilibrio entre precisión y eficiencia en el procesamiento de textos en imágenes.
+Después de realizar pruebas exhaustivas, **Tesseract** fue elegido como el motor OCR más adecuado debido a su excelente rendimiento tanto en términos de precisión como de rapidez en el procesamiento de imágenes.
 
-### Uso
+### Implementación de uso
 
-Para procesar una imagen y extraer su texto, se emplea la función `extraer_texto_img`, que incluye técnicas de preprocesamiento antes de aplicar Tesseract OCR. La implementación utilizada en el notebook es la siguiente:
+Para procesar una imagen y extraer su texto, se emplea la función `extraer_texto_img`, que incluye técnicas de preprocesamiento previas al uso de **Tesseract OCR**. La implementación utilizada en el notebook es la siguiente:
 
-``python
+```python
 
 from PIL import Image, ImageEnhance
 import pytesseract
@@ -260,19 +260,19 @@ def extraer_texto_img(imagen):
 
 ### Detalles Técnicos
 
-Para mejorar la precisión del OCR, se aplicaron las siguientes técnicas de preprocesamiento:
+Para optimizar la precisión del OCR, se implementaron las siguientes técnicas de preprocesamiento:
 
-- **Conversión a escala de grises**: Reduce el ruido de color y mejora la detección de caracteres.
-- **Ajuste de contraste**: Mejora la legibilidad del texto en imágenes con iluminación deficiente.
+- **Conversión a escala de grises**: Minimiza el ruido cromático, facilitando la detección precisa de caracteres.
+- **Ajuste de contraste**: Mejora la legibilidad del texto, especialmente en imágenes con iluminación deficiente o contrastes bajos.
 
-Estas optimizaciones garantizan que Tesseract reciba imágenes en un formato óptimo para la detección de texto.
+stas optimizaciones aseguran que las imágenes estén listas para una detección óptima de texto por parte de Tesseract.
 
 ### Resultados
 
-Ejemplo de salida esperada:
+El resultado esperado al procesar una imagen es la salida del texto extraído con la mayor precisión posible:
 
 ```
 Texto extraído de la imagen con OCR optimizado.
 ```
 
-Este texto extraído de las imágenes se incluye en el PipeLine de consulta a VirusTotal para en caso de detectar una URL o IP consultar a la API. 
+Este texto extraído se integra en el pipeline de consulta de VirusTotal, de forma que, si se detecta una URL o dirección IP, se realiza una consulta adicional a la API para verificar posibles amenazas.
