@@ -83,7 +83,141 @@ Para ejecutar el contenedor:
 A continuación se detalla el desarrollo realizado. 
 
  ---
- 
+ # 🛠 Fine-Tuning DeepSeek R1 (Distill Llama 8B) + LoRA para el Agente de Ciberseguridad ZeroScam  
+
+Implementa el fine-tuning de un modelo de lenguaje de **8B parámetros** utilizando **LoRA (Low-Rank Adaptation)** para optimizar su entrenamiento en tareas de **ciberseguridad**.  
+
+El objetivo es entrenar un modelo especializado para **detección y prevención de amenazas cibernéticas**, integrándolo en un sistema **RAG (Retrieval-Augmented Generation)** que consulta normativas de ciberseguridad para mejorar sus respuestas.  
+
+---
+
+## 🔹 Modelo Base: DeepSeek R1 Distill Llama 8B  
+
+El modelo base utilizado es **`deepseek-ai/DeepSeek-R1-Distill-Llama-8B`**, que es una versión distillada de **LLaMA 2** con **8.000 millones de parámetros**.  
+
+### ✅ Características principales:  
+
+- **Optimización en eficiencia y rendimiento** → Reducción del tamaño del modelo con mínima pérdida de capacidad.  
+- **Entrenado en múltiples idiomas** → Soporta inglés y otros idiomas con alta precisión.  
+- **Eficiencia computacional** → Se ha **cuantificado a 4 bits** para reducir el uso de memoria sin afectar el rendimiento significativamente.  
+
+### 📌 ¿Por qué DeepSeek R1 Distill Llama 8B?  
+
+Este modelo se eligió porque ofrece un **buen equilibrio entre tamaño y capacidad**, lo que permite ejecutar el fine-tuning en hardware limitado (**GPU con memoria reducida**) sin sacrificar demasiado rendimiento.  
+
+---
+
+## 📚 Datasets Utilizados  
+
+Para entrenar el modelo, se han seleccionado **4 datasets especializados** en ciberseguridad que contienen información sobre **ataques, defensa, normativas y buenas prácticas**.  
+
+| **Dataset** | **Descripción** | **Ejemplos** |  
+|------------|---------------|-------------|  
+| `ahmed000000000/cybersec` | Seguridad informática general | 2.500 |  
+| `dzakwan/cybersec` | Amenazas y defensa en ciberseguridad | 2.500 |  
+| `asimsultan/cyber2k` | Distintos aspectos de ciberseguridad | 2.000 |  
+| `Vanessasml/cybersecurity_32k_instruction_input_output` | Instrucción-respuesta para modelos conversacionales | 2.500 |  
+
+🔹 **Total de ejemplos**: **9.500 muestras** de texto enfocadas en ciberseguridad.  
+
+Estos datasets han sido **procesados y combinados** para mejorar la capacidad de **comprensión y respuesta** del modelo ante preguntas relacionadas con **seguridad informática y normativas**.  
+
+---
+
+## 🛠 Fine-Tuning con LoRA  
+
+Para optimizar el entrenamiento, se ha utilizado **LoRA (Low-Rank Adaptation)**, una técnica que permite afinar **grandes modelos de lenguaje** de manera eficiente.  
+
+### 🔹 ¿Cómo funciona LoRA?  
+
+1. **Congela los pesos del modelo base** → En lugar de ajustar todos los parámetros del modelo, LoRA solo modifica un pequeño subconjunto de ellos.  
+2. **Agrega capas de adaptación de bajo rango** → Estas capas capturan los ajustes específicos sin alterar el modelo original.  
+3. **Reduce los requisitos de cómputo** → Como solo se actualiza una parte del modelo, se necesita menos VRAM y menos tiempo de entrenamiento.  
+
+### 📌 Ventajas de LoRA en este Proyecto  
+
+✅ **Menor consumo de memoria** → Permite entrenar modelos grandes sin necesidad de **GPUs costosas**.  
+✅ **Mayor eficiencia** → Mantiene la capacidad del modelo base, pero lo adapta a un **dominio específico**.  
+✅ **Mejora en respuestas especializadas** → El modelo **aprende sobre ciberseguridad** sin perder conocimiento general.  
+
+---
+
+## 📤 Publicación en Hugging Face  
+
+Una vez completado el **fine-tuning**, el modelo es subido a **Hugging Face**, donde estará disponible para su uso en **aplicaciones de ciberseguridad**.  
+
+🔹 **Repositorio en Hugging Face**: **CasiAC/deepseek-r1-8b-ciberseguridad**.
+
+Este modelo podrá integrarse con el **sistema RAG**, mejorando la **calidad y precisión** de las respuestas basadas en normativas de ciberseguridad. 🚀  
+
+---
+
+## 🎯 Resumen del Flujo en Google Colab  
+
+1. **Instalar dependencias** (`bitsandbytes`, `transformers`, `accelerate`, `peft`).  
+2. **Montar Google Drive** para acceder a los datos de entrenamiento.  
+3. **Cargar el modelo DeepSeek R1 8B** y configurarlo con **cuantización a 4 bits**.  
+4. **Preprocesar datasets** de ciberseguridad para su uso en fine-tuning.  
+5. **Entrenar el modelo con LoRA** en **Google Colab** usando la **GPU A100**.  
+6. **Subir el modelo a Hugging Face** para su uso en el sistema **RAG**.  
+
+---
+
+## 🔥 Conclusión  
+
+Este proyecto permite entrenar un **modelo especializado en ciberseguridad** utilizando un enfoque **eficiente con LoRA**.  
+
+✅ **Fine-tuning de DeepSeek R1 8B** con LoRA para optimización de memoria.  
+✅ **Entrenamiento con 9.500 ejemplos** de datasets especializados.  
+✅ **Publicación en Hugging Face** para su integración en sistemas conversacionales.  
+✅ **Implementación en RAG** para mejorar la generación de respuestas basadas en normativas oficiales.  
+
+Con esta implementación, el **agente de ciberseguridad ZeroScam** podrá responder con **precisión** a consultas sobre **seguridad informática, normativas y mejores prácticas**. 🚀
+
+---
+
+## Procesado de la normativa para posterior RAG
+
+### 1: Conversión de PDF a JSON
+#### ¿Qué hicimos?
+Transformamos los documentos en formato PDF a JSON, extrayendo el texto y organizándolo por páginas.
+
+#### ¿Por qué lo hicimos?
+- Los PDFs no son fácilmente manipulables en NLP o bases de datos.
+- Un formato estructurado (JSON) permite trabajar con el texto fácilmente, conservando su estructura original.
+- Facilita el procesamiento posterior, como la segmentación y extracción de información relevante.
+
+### 2: Limpieza del Texto
+#### ¿Qué hicimos?
+Aplicamos un preprocesamiento de texto eliminando caracteres innecesarios, espacios adicionales y normalizando el contenido.
+
+#### ¿Por qué lo hicimos?
+- El texto extraído puede contener símbolos y caracteres especiales que no aportan valor.
+- La limpieza mejora la calidad del análisis NLP, eliminando ruido que podría afectar la tokenización y generación de embeddings.
+
+### 3: Tokenización y Segmentación con Ventanas Deslizantes
+#### ¿Qué hicimos?
+- Dividimos el texto en oraciones y eliminamos stopwords y puntuación.
+- Agrupamos las oraciones en fragmentos superpuestos llamados ventanas deslizantes para preservar el contexto.
+
+### 4: Generación de Embeddings
+#### ¿Qué hicimos?
+Convertimos cada fragmento de texto en vectores numéricos (embeddings) usando modelos de lenguaje preentrenados.
+
+#### ¿Por qué lo hicimos?
+- Los embeddings permiten comparar significados de textos, en lugar de depender solo de coincidencias exactas de palabras.
+- Son esenciales para hacer búsquedas semánticas en bases de datos vectoriales.
+
+### 5: Almacenamiento en ChromaDB
+#### ¿Qué hicimos?
+Guardamos los embeddings en ChromaDB, una base de datos vectorial optimizada para búsquedas semánticas.
+
+#### ¿Por qué lo hicimos?
+- Las bases de datos vectoriales permiten encontrar documentos similares en significado, no solo por palabras clave exactas.
+- Optimiza la búsqueda en textos largos como normativas y regulaciones.
+
+---
+
 ## RAG Normativa de Ciberseguridad
 
 La técnica **Retrieval-Augmented Generation (RAG)**, o **Generación Aumentada por Recuperación**, 
@@ -207,6 +341,8 @@ Con esta configuración, el modelo **Deepseek R1 8B Ciberseguridad** puede propo
 relevantes y contextualizadas a preguntas relacionadas con la seguridad de la información, marcando un avance 
 significativo en la aplicación de técnicas RAG en el ámbito de la ciberseguridad.
 
+---
+
 ## Módulo de Consulta a VirusTotal
 
 Este módulo permite verificar la seguridad de direcciones **IP** y **URLs** utilizando la API de **VirusTotal**. Se integra con un modelo de lenguaje para detectar direcciones sospechosas en un texto y generar respuestas automáticas.
@@ -227,46 +363,7 @@ Si un usuario proporciona un mensaje que contiene una IP o URL, el módulo detec
 #### 4. Generación de Respuestas Inteligentes
 El módulo no solo analiza direcciones, sino que también genera respuestas automatizadas. Si no se detecta una IP o URL, responde de manera normal utilizando un modelo de lenguaje.
 
-## Aplicacion normativa para posterior RAG
-
-### 1: Conversión de PDF a JSON
-#### ¿Qué hicimos?
-Transformamos los documentos en formato PDF a JSON, extrayendo el texto y organizándolo por páginas.
-
-#### ¿Por qué lo hicimos?
-- Los PDFs no son fácilmente manipulables en NLP o bases de datos.
-- Un formato estructurado (JSON) permite trabajar con el texto fácilmente, conservando su estructura original.
-- Facilita el procesamiento posterior, como la segmentación y extracción de información relevante.
-
-### 2: Limpieza del Texto
-#### ¿Qué hicimos?
-Aplicamos un preprocesamiento de texto eliminando caracteres innecesarios, espacios adicionales y normalizando el contenido.
-
-#### ¿Por qué lo hicimos?
-- El texto extraído puede contener símbolos y caracteres especiales que no aportan valor.
-- La limpieza mejora la calidad del análisis NLP, eliminando ruido que podría afectar la tokenización y generación de embeddings.
-
-### 3: Tokenización y Segmentación con Ventanas Deslizantes
-#### ¿Qué hicimos?
-- Dividimos el texto en oraciones y eliminamos stopwords y puntuación.
-- Agrupamos las oraciones en fragmentos superpuestos llamados ventanas deslizantes para preservar el contexto.
-
-### 4: Generación de Embeddings
-#### ¿Qué hicimos?
-Convertimos cada fragmento de texto en vectores numéricos (embeddings) usando modelos de lenguaje preentrenados.
-
-#### ¿Por qué lo hicimos?
-- Los embeddings permiten comparar significados de textos, en lugar de depender solo de coincidencias exactas de palabras.
-- Son esenciales para hacer búsquedas semánticas en bases de datos vectoriales.
-
-### 5: Almacenamiento en ChromaDB
-#### ¿Qué hicimos?
-Guardamos los embeddings en ChromaDB, una base de datos vectorial optimizada para búsquedas semánticas.
-
-#### ¿Por qué lo hicimos?
-- Las bases de datos vectoriales permiten encontrar documentos similares en significado, no solo por palabras clave exactas.
-- Optimiza la búsqueda en textos largos como normativas y regulaciones.
-
+---
 
 ## Tesseract OCR: Reconocimiento Óptico de Caracteres Optimizado
 
