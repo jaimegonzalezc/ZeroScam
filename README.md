@@ -438,3 +438,18 @@ Texto extraído de la imagen con OCR optimizado.
 ```
 
 Este texto extraído se integra en el pipeline de consulta de VirusTotal, de forma que, si se detecta una URL o dirección IP, se realiza una consulta adicional a la API para verificar posibles amenazas.
+
+
+## Framework Telegram
+
+Para dotar al usuario final de un framework agil y disponible en todo momento al alcance de la mano, se ha optado por la generación de un bot en Telegram que encapsula al Agente ZeroScam.
+
+El bot ejecuta dentro de una máquina EC2 de AWS con todos los requerimientos y entornos cargados.
+
+Para la creación de este bot, se ha iniciado una instancia maestra llamada botfather y creado el bot particular llamado: **ZeroScam_kc_bot**
+
+Con el código en ejecución el usuario puede realizar consultas desde la aplicación de un movil o desde un ordenador teniendo una cuenta registrada de Telegram.
+
+El flujo es el siguiente:
+
+![alt text](images/Flujo_bot.png)
