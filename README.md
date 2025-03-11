@@ -51,7 +51,6 @@ ZeroScam/
 │   ├── model_loader.py          # Carga del modelo en el bot
 │   ├── telegram_bot.ipynb       # Implementación del bot en Jupyter Notebook
 │   └── telegram_bot.py          # Código principal del bot de Telegram
-├── .env                         # Variables de entorno necesarias para la configuración
 ├── .gitignore                   # Archivos y carpetas ignorados por Git
 ├── README.md                    # Documentación principal del repositorio
 └── ZeroScam.ipynb               # Versión completa de la aplicación para ejecutar el modelo
